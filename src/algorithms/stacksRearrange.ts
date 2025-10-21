@@ -38,15 +38,6 @@ export function rearrangeStacks(stacksInput: number[][]): RearrangeResult {
 
     if (isComplete()) return { possible: true, moves: [], finalStacks: stacks };
 
-    // Перемещение контейнера
-    const move = (from: number, to: number) => {
-        const container = stacks[from].pop();
-        if (container !== undefined) {
-            stacks[to].push(container);
-            moves.push([from + 1, to + 1]);
-        }
-    };
-
     // Найти вспомогательную стопку (не target и не exclude)
     const findAux = (exclude1: number, exclude2: number): number => {
         for (let i = 0; i < n; i++) {
@@ -55,61 +46,43 @@ export function rearrangeStacks(stacksInput: number[][]): RearrangeResult {
         return (exclude1 + 1) % n;
     };
 
-    // Переместить верхний элемент в его домашнюю стопку или aux
-    const moveTop = (from: number, target: number) => {
-        const top = stacks[from][stacks[from].length - 1];
-        const home = top - 1;
-        const to = home === from ? findAux(from, target) : home;
-        move(from, to);
-    };
+    const hasWrongType = (stack: number[], type: number) =>
+        stack.some((c) => c !== type);
 
-    // Убрать не-type элементы со стопки
-    const clearNonType = (stackIdx: number, type: number, target: number) => {
-        while (
-            stacks[stackIdx].length > 0 &&
-            stacks[stackIdx][stacks[stackIdx].length - 1] !== type
-        ) {
-            moveTop(stackIdx, target);
-        }
-    };
-
-    // Переместить все элементы типа type в целевую стопку
-    const collectType = (from: number, type: number, target: number) => {
-        while (stacks[from].includes(type)) {
-            clearNonType(from, type, target);
-            if (stacks[from].length > 0) move(from, target);
-        }
-    };
-
-    // Есть ли в стопке элементы не равные type
-    const hasNonType = (idx: number, type: number) =>
-        stacks[idx].some((v) => v !== type);
-
-    // Основной алгоритм: обрабатываем каждый тип по очереди
     for (let type = 1; type <= n; type++) {
         const target = type - 1;
-        const buffer = (target + 1) % n;
+        const buffer = (target + 1) % n; // вспомогательная стопка
 
-        // 1. Очищаем target: если сверху t, а ниже чужие — снимаем t в buffer, пока не откроется чужой, и уводим его «домой»
-        while (hasNonType(target, type) && stacks[target].length > 0) {
-            while (
-                stacks[target].length > 0 &&
-                stacks[target][stacks[target].length - 1] === type
-            ) {
-                move(target, buffer);
-            }
-            if (stacks[target].length === 0) break;
-            const v = stacks[target][stacks[target].length - 1];
-            const home = v - 1;
-            move(target, home);
+        // Фаза 1: освободить целевой стек
+        while (
+            stacks[target].length > 0 && hasWrongType(stacks[target], type)
+        ) {
+            const topVal = stacks[target].pop()!;
+            const destination = topVal === type ? buffer : topVal - 1;
+            stacks[destination].push(topVal);
+            moves.push([target + 1, destination + 1]);
         }
-        // Вернуть t из buffer на target
-        collectType(buffer, type, target);
 
-        // 3. Собираем type из всех остальных стопок
+        // Фаза 2: собрать все type в целевой стек
         for (let i = 0; i < n; i++) {
-            if (i !== target) {
-                collectType(i, type, target);
+            if (i === target) continue;
+            while (stacks[i].includes(type)) {
+                // Убираем препятствия сверху
+                while (
+                    stacks[i].length > 0 &&
+                    stacks[i][stacks[i].length - 1] !== type
+                ) {
+                    const topVal = stacks[i].pop()!;
+                    let dest = topVal - 1;
+                    if (dest === i) dest = findAux(i, target); // не перемещать в тот же стек
+                    stacks[dest].push(topVal);
+                    moves.push([i + 1, dest + 1]);
+                }
+                if (stacks[i].length > 0) {
+                    stacks[i].pop();
+                    stacks[target].push(type);
+                    moves.push([i + 1, target + 1]);
+                }
             }
         }
     }
