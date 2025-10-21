@@ -4,4 +4,4 @@
 
 Использованные технологии: Astro, Tailwind, React.
 
-Ссылка на деплой: [algorithm-labs.netlify.app]()
+Ссылка на деплой: [https://algorithm-labs.netlify.app]()
