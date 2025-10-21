@@ -1,10 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 const labs = [
-  { id: 1, title: "Лабораторная 1", href: "/labs/1" },
-  { id: 2, title: "Лабораторная 2", href: "/labs/2" },
-  { id: 3, title: "Лабораторная 3", href: "/labs/3" },
-  { id: 4, title: "Лабораторная 4", href: "/labs/4" },
+  { id: 1, title: "Лабораторная 1", href: "/labs/1", desc: "Сортировка дат (клиентский список + алгоритм)" },
+  { id: 2, title: "Лабораторная 2", href: "/labs/2", desc: "Ветви и границы для целочисленной задачи" },
+  { id: 3, title: "Лабораторная 3", href: "/labs/3", desc: "Стэки и очереди: раскладка контейнеров" },
+  { id: 4, title: "Лабораторная 4", href: "/labs/4", desc: "Графы: проверка наличия цикла" },
 ];
 ---
 
@@ -16,12 +16,15 @@ const labs = [
     <p class="mt-4 text-muted w-full">Выполнил: Луков Иван, ИС-23-4.</p>
   </section>
 
-  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+  <section class="flex flex-col gap-4">
     {labs.map((lab) => (
-      <a href={lab.href} class="card group p-5 relative overflow-hidden">
-        <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-accent/10 blur-2xl group-hover:bg-accent/20 transition-colors"></div>
-        <h2 class="text-lg font-medium">{lab.title}</h2>
-        <p class="mt-2 text-sm text-muted/90">Перейти →</p>
+      <a href={lab.href} class="card group relative overflow-hidden w-full px-6 py-5 flex items-center justify-between">
+        <div class="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/10 blur-2xl group-hover:bg-accent/20 transition-colors"></div>
+        <div class="relative">
+          <h2 class="text-2xl font-semibold">{lab.title}</h2>
+          <p class="mt-1 text-sm text-muted/90">{lab.desc}</p>
+        </div>
+        <span class="relative text-accent text-lg group-hover:translate-x-1 transition-transform">→</span>
       </a>
     ))}
   </section>
