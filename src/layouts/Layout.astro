@@ -1,0 +1,30 @@
+---
+const { title = 'Algorithm Labs', description = 'Лабораторные — Структуры Данных' } = Astro.props;
+---
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-background to-surface text-foreground">
+    <div class="container mx-auto max-w-7xl py-8">
+      <header class="flex items-center justify-between mb-8">
+        <a href="/" class="inline-flex items-center gap-3">
+          <span class="inline-block h-3 w-3 rounded-full bg-accent shadow-[0_0_20px_theme(colors.accent)]"></span>
+          <span class="text-sm text-muted tracking-wide">Algorithm Labs</span>
+        </a>
+      </header>
+      <main>
+        <slot />
+      </main>
+    </div>
+  </body>
+  <style is:global>
+    @import "../styles/global.css";
+  </style>
+</html>
+
+

@@ -1,0 +1,35 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DateListLab from "../../components/DateListLab.tsx";
+import { shuffle } from "../../utils/array.ts";
+
+const baseStart = new Date("2010-01-01").getTime();
+const dayMs = 24 * 60 * 60 * 1000;
+function seedDates(count: number): string[] {
+  const arr: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const dt = new Date(baseStart + i * dayMs);
+    arr.push(dt.toISOString().slice(0, 10));
+  }
+  return arr;
+}
+const initialDates = shuffle(seedDates(50));
+---
+<Layout title="Лабораторная 1 — Сортировка дат">
+  <section class="mb-6">
+    <h1 class="text-2xl font-semibold">Лабораторная 1. Сортировка списка дат по убыванию</h1>
+    <p class="mt-2 text-muted">Список содержит не менее 50 элементов. Можно редактировать, перемешать и отсортировать по убыванию.</p>
+    <div class="mt-4 card p-4">
+      <h2 class="font-medium mb-2">Задание</h2>
+      <p>Напишите программу, которая сортирует список дат (в формате "год-месяц-день") по убыванию.</p>
+      <ul class="mt-3 space-y-2 text-sm text-muted">
+        <li>• Формат даты: <code class="text-accent">YYYY-MM-DD</code> (например, 2024-01-31)</li>
+        <li>• Сортировка по убыванию: от поздних дат к ранним</li>
+        <li>• Программа должна корректно обрабатывать некорректные значения</li>
+        <li>• Реализация не должна изменять исходный массив</li>
+      </ul>
+    </div>
+  </section>
+  <DateListLab client:load initialDates={initialDates} />
+</Layout>
+

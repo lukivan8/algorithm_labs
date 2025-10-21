@@ -1,16 +1,28 @@
 ---
-
+import Layout from "../layouts/Layout.astro";
+const labs = [
+  { id: 1, title: "Лабораторная 1", href: "/labs/1" },
+  { id: 2, title: "Лабораторная 2", href: "/labs/2" },
+  { id: 3, title: "Лабораторная 3", href: "/labs/3" },
+  { id: 4, title: "Лабораторная 4", href: "/labs/4" },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="ЛР — Структуры Данных">
+  <section class="mb-10 w-full">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-relaxed">
+      Лабораторные работы по дисциплине <span class="bg-accent/15 rounded-md px-2 py-1 text-accent">Структуры Данных</span>
+    </h1>
+    <p class="mt-4 text-muted w-full">Выполнил: Луков Иван, ИС-23-4.</p>
+  </section>
+
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    {labs.map((lab) => (
+      <a href={lab.href} class="card group p-5 relative overflow-hidden">
+        <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-accent/10 blur-2xl group-hover:bg-accent/20 transition-colors"></div>
+        <h2 class="text-lg font-medium">{lab.title}</h2>
+        <p class="mt-2 text-sm text-muted/90">Перейти →</p>
+      </a>
+    ))}
+  </section>
+</Layout>
