@@ -11,48 +11,39 @@ export function sortDatesDescending(input: readonly string[]): string[] {
         .filter((x): x is { s: string; k: number } => x.k !== null);
 
     const cmp: Comparator<{ s: string; k: number }> = (a, b) => a.k - b.k;
-    // Hybrid: insertion sort for small arrays, merge sort for larger
-    const sortedPairs = parsed.length <= 64
-        ? insertionSortDesc(parsed, cmp)
-        : mergeSortDesc(parsed, cmp);
+    const sortedPairs = quickSortDescIterative(parsed, cmp);
     return sortedPairs.map((x) => x.s);
 }
 
 type Comparator<T> = (a: T, b: T) => number;
 
-function mergeSortDesc<T>(arr: T[], cmp: Comparator<T>): T[] {
-    if (arr.length <= 1) return arr.slice();
-    const mid = Math.floor(arr.length / 2);
-    const left = mergeSortDesc(arr.slice(0, mid), cmp);
-    const right = mergeSortDesc(arr.slice(mid), cmp);
-    return mergeDesc(left, right, cmp);
-}
-
-function mergeDesc<T>(a: T[], b: T[], cmp: Comparator<T>): T[] {
-    const out: T[] = [];
-    let i = 0, j = 0;
-    while (i < a.length && j < b.length) {
-        if (cmp(a[i], b[j]) > 0) {
-            out.push(a[i++]);
-        } else {
-            out.push(b[j++]);
-        }
-    }
-    while (i < a.length) out.push(a[i++]);
-    while (j < b.length) out.push(b[j++]);
-    return out;
-}
-
-function insertionSortDesc<T>(arr: T[], cmp: Comparator<T>): T[] {
+function quickSortDescIterative<T>(arr: T[], cmp: Comparator<T>): T[] {
     const a = arr.slice();
-    for (let i = 1; i < a.length; i++) {
-        const key = a[i];
-        let j = i - 1;
-        while (j >= 0 && cmp(a[j], key) < 0) {
-            a[j + 1] = a[j];
-            j--;
+    const stack: Array<[number, number]> = [[0, a.length - 1]];
+
+    while (stack.length) {
+        const [lo, hi] = stack.pop()!;
+        if (lo >= hi) continue;
+
+        const pivot = a[hi];
+        let i = lo;
+        for (let j = lo; j < hi; j++) {
+            if (cmp(a[j], pivot) > 0) {
+                [a[i], a[j]] = [a[j], a[i]];
+                i++;
+            }
         }
-        a[j + 1] = key;
+        [a[i], a[hi]] = [a[hi], a[i]];
+
+        const leftSize = i - 1 - lo;
+        const rightSize = hi - (i + 1);
+        if (leftSize > rightSize) {
+            if (lo < i - 1) stack.push([lo, i - 1]);
+            if (i + 1 < hi) stack.push([i + 1, hi]);
+        } else {
+            if (i + 1 < hi) stack.push([i + 1, hi]);
+            if (lo < i - 1) stack.push([lo, i - 1]);
+        }
     }
     return a;
 }
